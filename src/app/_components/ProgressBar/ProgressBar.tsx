@@ -8,9 +8,11 @@ const ProgressBar = ({ status }: { status: 'pending' | 'done' }) => {
 
     if (status === 'pending' && progress < 90) {
       interval = setInterval(() => {
-        setProgress((oldProgress) => {
+        setProgress(oldProgress => {
           const newProgress = Math.min(oldProgress + 3, 90);
-          return newProgress >= 90 ? Math.floor(Math.random() * (99 - 90 + 1) + 90) : newProgress;
+          return newProgress >= 90
+            ? Math.floor(Math.random() * (99 - 90 + 1) + 90)
+            : newProgress;
         });
       }, 333);
     }

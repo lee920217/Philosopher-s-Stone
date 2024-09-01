@@ -29,15 +29,15 @@ export const ConnectProvider = ConnectContext.Provider;
 export const useConnect = () => {
   const { connectors, autoConnect } = useContext(ConnectContext);
   const walletInfo = useSelector((state: RootState) => state.wallet.wallet);
-  const address = walletInfo?.address
-  const connectorType = walletInfo?.walletType
+  const address = walletInfo?.address;
+  const connectorType = walletInfo?.walletType;
   const [autoConnected, setAuthConnected] = useState(false);
   const connected = !!address;
 
   const getCells = async () => {
-    let cells = await SporeService.shared.getNewOmnilock()
-    return cells[0]
-  }
+    let cells = await SporeService.shared.getNewOmnilock();
+    return cells[0];
+  };
 
   const lock = useMemo(() => {
     if (!address) return undefined;
@@ -47,7 +47,7 @@ export const useConnect = () => {
   const connector = useMemo(
     () =>
       connectors.find(
-        (connector) =>
+        connector =>
           connector.type.toLowerCase() === connectorType?.toLowerCase(),
       ),
     [connectors, connectorType],
@@ -60,9 +60,9 @@ export const useConnect = () => {
 
     if (address && autoConnect && !connector?.isConnected) {
       setAuthConnected(true);
-      if(connector?.type === 'MetaMask') {
-        connector?.connect().catch((e) => {
-          enqueueSnackbar((e as Error).message, {variant: 'error'})
+      if (connector?.type === 'MetaMask') {
+        connector?.connect().catch(e => {
+          enqueueSnackbar((e as Error).message, { variant: 'error' });
         });
       }
     }
@@ -95,11 +95,11 @@ export const useConnect = () => {
         // connector.connect();
         return;
       } catch (e) {
-        enqueueSnackbar((e as Error).message, {variant: 'error'})
+        enqueueSnackbar((e as Error).message, { variant: 'error' });
       }
     }
-    return connectors
-  }, [connectors])
+    return connectors;
+  }, [connectors]);
 
   const getAnyoneCanPayLock = useCallback(() => {
     if (!connector) {
@@ -109,19 +109,6 @@ export const useConnect = () => {
     return lock;
   }, [connector, connectorType]);
 
-  const signTransaction = useCallback(
-    async (
-      txSkeleton: helpers.TransactionSkeletonType,
-    ): Promise<Transaction> => {
-      if (!connector) {
-        throw new Error(`Connector ${connectorType} not found`);
-      }
-      const transaction = await connector.signTransaction(txSkeleton);
-      return transaction;
-    },
-    [connector, connectorType],
-  );
-
   return {
     address,
     lock,
@@ -129,6 +116,5 @@ export const useConnect = () => {
     isOwned,
     disconnect,
     getAnyoneCanPayLock,
-    signTransaction,
   };
 };

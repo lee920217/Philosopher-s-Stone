@@ -14,7 +14,7 @@ const unavailableSlice = createSlice({
   reducers: {
     setUnavailablelist(state, action: PayloadAction<string[]>) {
       state.list = action.payload;
-    }
+    },
   },
 });
 

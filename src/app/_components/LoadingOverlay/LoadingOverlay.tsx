@@ -8,13 +8,17 @@ interface LoadingOverlayProps {
   progressStatus: 'pending' | 'done';
 }
 
-const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isVisible, texts, progressStatus }) => {
+const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
+  isVisible,
+  texts,
+  progressStatus,
+}) => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Typing and deleting animation for "Philosopher Stone"
   useEffect(() => {
-    let text = 'Philosopher\'s Stone';
+    let text = "Philosopher's Stone";
     let i = 0;
     let isDeleting = false;
 
@@ -52,16 +56,19 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isVisible, texts, progr
 
   return (
     <div className="fixed inset-0 bg-primary011 bg-opacity-90 flex items-center justify-center">
-      <div className='w-full px-4 flex flex-col items-center justify-center'>
+      <div className="w-full px-4 flex flex-col items-center justify-center">
         <Image
-          className='mb-8'
-          alt={"logo"}
-          src={"/svg/ps-logo-light.svg"}
+          className="mb-8"
+          alt={'logo'}
+          src={'/svg/ps-logo-light.svg'}
           width={174}
           height={40}
         />
         <ProgressBar status={progressStatus} />
-        <p className="text-white001 font-SourceSanPro mt-4"> {texts[currentIndex]}</p>
+        <p className="text-white001 font-SourceSanPro mt-4">
+          {' '}
+          {texts[currentIndex]}
+        </p>
       </div>
     </div>
   );

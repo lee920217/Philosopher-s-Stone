@@ -1,4 +1,9 @@
-import { SporeConfig, defaultEmptyWitnessArgs, updateWitnessArgs, isScriptValueEquals } from '@spore-sdk/core';
+import {
+  SporeConfig,
+  defaultEmptyWitnessArgs,
+  updateWitnessArgs,
+  isScriptValueEquals,
+} from '@spore-sdk/core';
 import { hd, helpers, HexString, RPC } from '@ckb-lumos/lumos';
 import { Address, Hash, Script } from '@ckb-lumos/base';
 import { common } from '@ckb-lumos/common-scripts';
@@ -8,15 +13,22 @@ export interface Secp256k1Wallet {
   lock: Script;
   address: Address;
   signMessage(message: HexString): Hash;
-  signTransaction(txSkeleton: helpers.TransactionSkeletonType): helpers.TransactionSkeletonType;
-  signAndSendTransaction(txSkeleton: helpers.TransactionSkeletonType): Promise<Hash>;
+  signTransaction(
+    txSkeleton: helpers.TransactionSkeletonType,
+  ): helpers.TransactionSkeletonType;
+  signAndSendTransaction(
+    txSkeleton: helpers.TransactionSkeletonType,
+  ): Promise<Hash>;
 }
 
 /**
  * Create a Secp256k1Blake160 Sign-all Wallet by a private key and a SporeConfig,
  * providing lock/address, and functions sign message/transaction and send the transaction on-chain.
  */
-export function createSecp256k1Wallet(privateKey: HexString, config: SporeConfig): Secp256k1Wallet {
+export function createSecp256k1Wallet(
+  privateKey: HexString,
+  config: SporeConfig,
+): Secp256k1Wallet {
   const Secp256k1Blake160 = sporeConfig.lumos.SCRIPTS.SECP256K1_BLAKE160!;
 
   // Generate a lock script from the private key
@@ -38,7 +50,9 @@ export function createSecp256k1Wallet(privateKey: HexString, config: SporeConfig
 
   // Sign prepared signing entries,
   // and then fill signatures into Transaction.witnesses
-  function signTransaction(txSkeleton: helpers.TransactionSkeletonType): helpers.TransactionSkeletonType {
+  function signTransaction(
+    txSkeleton: helpers.TransactionSkeletonType,
+  ): helpers.TransactionSkeletonType {
     const signingEntries = txSkeleton.get('signingEntries');
     const signatures = new Map<HexString, Hash>();
     const inputs = txSkeleton.get('inputs');
@@ -58,7 +72,10 @@ export function createSecp256k1Wallet(privateKey: HexString, config: SporeConfig
 
         const signature = signatures.get(entry.message)!;
         const witness = witnesses.get(entry.index, defaultEmptyWitnessArgs);
-        witnesses = witnesses.set(entry.index, updateWitnessArgs(witness, 'lock', signature));
+        witnesses = witnesses.set(
+          entry.index,
+          updateWitnessArgs(witness, 'lock', signature),
+        );
       }
     }
 
@@ -66,12 +83,16 @@ export function createSecp256k1Wallet(privateKey: HexString, config: SporeConfig
   }
 
   // Sign the transaction and send it via RPC
-  async function signAndSendTransaction(txSkeleton: helpers.TransactionSkeletonType): Promise<Hash> {
+  async function signAndSendTransaction(
+    txSkeleton: helpers.TransactionSkeletonType,
+  ): Promise<Hash> {
     // Env
     const rpc = new RPC(sporeConfig.ckbNodeUrl);
 
     // Sign transaction
-    txSkeleton = common.prepareSigningEntries(txSkeleton, { config: sporeConfig.lumos });
+    txSkeleton = common.prepareSigningEntries(txSkeleton, {
+      config: sporeConfig.lumos,
+    });
     txSkeleton = signTransaction(txSkeleton);
     // Convert to Transaction
     const tx = helpers.createTransactionFromSkeleton(txSkeleton);

@@ -3,24 +3,34 @@ import BlindBoxItem from './_bListItem';
 import { boxData } from '@/types/BlindBox';
 
 export interface BlindBoxItemType {
-    id: string;
-    boxData: boxData[];
+  id: string;
+  boxData: boxData[];
 }
 
 interface BlindBoxListProps {
-  gifts:BlindBoxItemType[]; // 替换为盲盒数组类型
+  gifts: BlindBoxItemType[]; // 替换为盲盒数组类型
   onGiftClick: (id: string) => void;
   isGiftSelected: (id: string) => boolean;
   viewMode: 'list' | 'grid';
   interactionType?: number;
 }
 
-const _bList: React.FC<BlindBoxListProps> = ({ gifts, onGiftClick, isGiftSelected, viewMode, interactionType }) => {
+const _bList: React.FC<BlindBoxListProps> = ({
+  gifts,
+  onGiftClick,
+  isGiftSelected,
+  viewMode,
+  interactionType,
+}) => {
   return (
-    <div className='mb-8'>
-      <div className={`${viewMode === 'list' ? 'flex flex-col' : 'grid grid-cols-2 gap-4'} mt-4`}>
+    <div className="mb-8">
+      <div
+        className={`${
+          viewMode === 'list' ? 'flex flex-col' : 'grid grid-cols-2 gap-4'
+        } mt-4`}
+      >
         {gifts.map(box => (
-          <BlindBoxItem 
+          <BlindBoxItem
             key={box.id}
             blindBox={box}
             isSelected={isGiftSelected(box.id)}

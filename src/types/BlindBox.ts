@@ -1,3 +1,3 @@
 export interface boxData {
-    id: string
+  id: string;
 }

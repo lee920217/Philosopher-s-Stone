@@ -11,7 +11,7 @@ export async function sendTransaction(tx: Transaction) {
 
 export async function waitForTranscation(txHash: string) {
   const rpc = new RPC(sporeConfig.ckbNodeUrl);
-  return new Promise(async (resolve) => {
+  return new Promise(async resolve => {
     const transaction = await rpc.getTransaction(txHash);
     const { status } = transaction.txStatus;
     if (status === 'committed') {

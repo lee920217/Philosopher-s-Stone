@@ -1,3 +1,5 @@
+import { QueryDobByAdderssItem } from '@/hooks/useQueryDobByAddress';
+
 export interface Gift {
   id: string;
   name: string;
@@ -6,7 +8,7 @@ export interface Gift {
 }
 
 export interface GiftProps {
-  [key: string]: string;
+  [key: string]: string | QueryDobByAdderssItem;
 }
 
 export interface ReceivedGift {

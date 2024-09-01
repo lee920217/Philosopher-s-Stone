@@ -27,8 +27,8 @@ export const useConnect = () => {
   const { connectors, autoConnect } = useContext(ConnectContext);
   const walletInfo = useSelector((state: RootState) => state.wallet.wallet);
 
-  const address = walletInfo?.address
-  const connectorType = walletInfo?.walletType
+  const address = walletInfo?.address;
+  const connectorType = walletInfo?.walletType;
   const [autoConnected, setAuthConnected] = useState(false);
   const connected = !!address;
 
@@ -40,7 +40,7 @@ export const useConnect = () => {
   const connector = useMemo(
     () =>
       connectors.find(
-        (connector) =>
+        connector =>
           connector.type.toLowerCase() === connectorType?.toLowerCase(),
       ),
     [connectors, connectorType],
@@ -64,24 +64,10 @@ export const useConnect = () => {
     return lock;
   }, [connector, connectorType]);
 
-  const signTransaction = useCallback(
-    async (
-      txSkeleton: helpers.TransactionSkeletonType,
-    ): Promise<Transaction> => {
-      if (!connector) {
-        throw new Error(`Connector ${connectorType} not found`);
-      }
-      const transaction = await connector.signTransaction(txSkeleton);
-      return transaction;
-    },
-    [connector, connectorType],
-  );
-
   return {
     address,
     lock,
     isOwned,
     getAnyoneCanPayLock,
-    signTransaction,
   };
 };

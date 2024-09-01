@@ -37,7 +37,6 @@ export async function signTransaction(
   fromLock: Script,
   signMessage: (message: string) => Promise<string>,
 ): Promise<Transaction> {
-  config.initializeConfig(sporeConfig.lumos);
   const inputs = txSkeleton.get('inputs')!;
   const outputs = txSkeleton.get('outputs')!;
 
@@ -47,10 +46,10 @@ export async function signTransaction(
     const { lock } = output.cellOutput;
     if (
       isAnyoneCanPay(lock) &&
-      inputs.some((i) => isSameScript(i.cellOutput.lock, lock))
+      inputs.some(i => isSameScript(i.cellOutput.lock, lock))
     ) {
       const minimalCapacity = getAnyoneCanPayMinimumCapacity(lock);
-      txSkeleton = txSkeleton.update('outputs', (outputs) => {
+      txSkeleton = txSkeleton.update('outputs', outputs => {
         output.cellOutput.capacity = BI.from(output.cellOutput.capacity)
           .add(minimalCapacity)
           .toHexString();
@@ -63,9 +62,9 @@ export async function signTransaction(
     const { lock } = input.cellOutput;
     if (
       isAnyoneCanPay(lock) &&
-      outputs.some((o) => isSameScript(o.cellOutput.lock, lock))
+      outputs.some(o => isSameScript(o.cellOutput.lock, lock))
     ) {
-      txSkeleton = txSkeleton.update('witnesses', (witnesses) => {
+      txSkeleton = txSkeleton.update('witnesses', witnesses => {
         return witnesses.set(index, '0x');
       });
     }
@@ -85,7 +84,7 @@ export async function signTransaction(
       // skip anyone-can-pay witness when cell lock not changed
       if (
         !isSameScript(lock, fromLock!) &&
-        outputs.some((o) => isSameScript(o.cellOutput.lock, lock))
+        outputs.some(o => isSameScript(o.cellOutput.lock, lock))
       ) {
         continue;
       }
@@ -93,7 +92,7 @@ export async function signTransaction(
       const { message, index } = entry;
       if (signedWitnesses.has(message)) {
         const signedWitness = signedWitnesses.get(message)!;
-        tx = tx.update('witnesses', (witnesses) => {
+        tx = tx.update('witnesses', witnesses => {
           return witnesses.set(index, signedWitness);
         });
         continue;
@@ -118,7 +117,7 @@ export async function signTransaction(
       );
       signedWitnesses.set(message, signedWitness);
 
-      tx = tx.update('witnesses', (witnesses) => {
+      tx = tx.update('witnesses', witnesses => {
         return witnesses.set(index, signedWitness);
       });
     }

@@ -8,14 +8,18 @@ import {
 } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
-export const RESPONSE_CACHE_ENABLED = process.env.NEXT_PUBLIC_RESPONSE_CACHE_ENABLED === 'true';
+export const RESPONSE_CACHE_ENABLED =
+  process.env.NEXT_PUBLIC_RESPONSE_CACHE_ENABLED === 'true';
 
 export function useRefreshableQuery<
   TQueryFnData = unknown,
   TError = DefaultError,
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
->(options: UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>, refreshOnMount?: boolean) {
+>(
+  options: UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+  refreshOnMount?: boolean,
+) {
   const { queryKey, queryFn, enabled, initialData } = options;
   const queryClient = useQueryClient();
 
@@ -33,23 +37,27 @@ export function useRefreshableQuery<
       if (headers) {
         ctx.meta.headers = headers;
       }
-      return Promise.resolve(queryFn?.(ctx));
+      if (typeof queryFn === 'function') {
+        return Promise.resolve(queryFn(ctx));
+      } else {
+        return Promise.reject(new Error('queryFn is not a function'));
+      }
     },
     [queryFn],
   );
 
   const queryResult = useQuery({
     queryKey,
-    queryFn: async (ctx) => {
+    queryFn: async ctx => {
       const response = await request(ctx);
       if (RESPONSE_CACHE_ENABLED && refreshOnMount) {
         const headers = getResponseCacheDisabledHeaders();
         request(ctx, headers)
-          .then((data) => {
+          .then(data => {
             // @ts-ignore
             queryClient.setQueryData(queryKey, data);
           })
-          .catch((e) => console.error(e));
+          .catch(e => console.error(e));
       }
       return response;
     },

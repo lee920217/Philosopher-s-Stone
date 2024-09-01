@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 export const useGiftReceiveModal = () => {
   const [isGiftReceiveModalOpen, setGiftReceiveModalIsOpen] = useState(false);
@@ -6,5 +6,9 @@ export const useGiftReceiveModal = () => {
   const openGiftReceiveModal = () => setGiftReceiveModalIsOpen(true);
   const closeGiftReceiveModal = () => setGiftReceiveModalIsOpen(false);
 
-  return { isGiftReceiveModalOpen, openGiftReceiveModal, closeGiftReceiveModal };
+  return {
+    isGiftReceiveModalOpen,
+    openGiftReceiveModal,
+    closeGiftReceiveModal,
+  };
 };

@@ -8,60 +8,80 @@ import { fetchGiftAPI } from '@/utils/fetchAPI';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { BlindBoxItemType } from './_bList';
+import { QueryDobByAdderssData } from '@/hooks/useQueryDobByAddress';
 
 interface GiftListProps {
   onNewGiftClick?: () => void;
-  list: QuerySpore[];
+  list: QueryDobByAdderssData;
   type: string;
   blindboxList: BlindBoxItemType[];
-  interactionType?: number
+  interactionType?: number;
 }
 
-const GiftList: React.FC<GiftListProps> = ({ onNewGiftClick, list, type, blindboxList = [], interactionType = 1 }) => {
-  const [gifts, setGifts] = useState<QuerySpore[]>(list);
+const GiftList: React.FC<GiftListProps> = ({
+  onNewGiftClick,
+  list,
+  type,
+  blindboxList = [],
+  interactionType = 1,
+}) => {
+  const [gifts, setGifts] = useState<QueryDobByAdderssData>(list);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
   const [selectedGifts, setSelectedGifts] = useState<string[]>([]);
   const { width } = useWindowDimensions();
   const [inProcessingList, setInProcessingList] = useState<string[]>([]);
-  const walletAddress = useSelector((state: RootState) => state.wallet.wallet?.address);
-  const unavailableList = useSelector((state: RootState) => state.unavailableList.list);
+  const walletAddress = useSelector(
+    (state: RootState) => state.wallet.wallet?.address,
+  );
+  const unavailableList = useSelector(
+    (state: RootState) => state.unavailableList.list,
+  );
 
   const handleSelectGift = (id: string) => {
-    setSelectedGifts(prev => 
-      prev.includes(id) ? prev.filter(giftId => giftId !== id) : [...prev, id]
+    setSelectedGifts(prev =>
+      prev.includes(id) ? prev.filter(giftId => giftId !== id) : [...prev, id],
     );
   };
 
   const getInProcessingList = async (k: string) => {
-    // const inProcessingGifts = await fetchGiftAPI({
-    //   action: 'getUnavailableGifts',
-    //   key: k,
-    // })
-    // if (!inProcessingGifts.data) return 
-    // const filtered = Object.values(inProcessingGifts.data).filter(item => item !== 'create');
-    // setGifts(list.filter(item => !filtered.includes(item.id)));
-  }
+    const inProcessingGifts = await fetchGiftAPI({
+      action: 'getUnavailableGifts',
+      key: k,
+    });
+    if (!inProcessingGifts.data) return;
+    const filtered = Object.values(inProcessingGifts.data).filter(
+      item => item !== 'create',
+    );
+    setGifts(list.filter(item => !filtered.includes(item.id)));
+  };
 
   useEffect(() => {
-    if(walletAddress) {
+    if (walletAddress) {
+      getInProcessingList(walletAddress);
       setGifts(list.filter(item => !unavailableList?.includes(item.id)));
     }
-  }, [list, walletAddress, unavailableList])
+  }, [list, walletAddress, unavailableList]);
 
   const isGiftSelected = (id: string) => selectedGifts.includes(id);
 
   return (
-    <div className='mb-8'>
+    <div className="mb-8">
       <div className="flex justify-between items-center mt-4">
         <div>
-          <span className='text-white001 text-labelmb font-SourceSanPro'>
-            {type === 'Gift' ? gifts.length : blindboxList.length} 
-            {type === 'Gift' ? gifts.length === 1 ? " Gift" : " Gifts" : blindboxList.length === 1 ? " Blind Box" : " Blind Boxes"}
+          <span className="text-white001 text-labelmb font-SourceSanPro">
+            {type === 'Gift' ? gifts.length : blindboxList.length}
+            {type === 'Gift'
+              ? gifts.length === 1
+                ? ' Gift'
+                : ' Gifts'
+              : blindboxList.length === 1
+              ? ' Blind Box'
+              : ' Blind Boxes'}
           </span>
           {/* <button className="cursor-pointer ml-4 text-primary004">Select All</button> */}
         </div>
-        <div onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}>
+        {/* <div onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}>
           {viewMode === "grid" ? 
             <Image 
               className="cursor-pointer"
@@ -77,18 +97,24 @@ const GiftList: React.FC<GiftListProps> = ({ onNewGiftClick, list, type, blindbo
               width={24}
               height={24}
           />}
-        </div>
+        </div> */}
       </div>
-      { type === 'Gift' ? (<List
-        gifts={gifts}
-        onGiftClick={handleSelectGift}
-        isGiftSelected={isGiftSelected}
-        interactionType={interactionType}
-        viewMode={viewMode}
-      />) : (<BlindBoxList gifts={blindboxList}
-        onGiftClick={handleSelectGift}
-        isGiftSelected={isGiftSelected}
-        viewMode={viewMode} />)}
+      {type === 'Gift' ? (
+        <List
+          gifts={gifts}
+          onGiftClick={handleSelectGift}
+          isGiftSelected={isGiftSelected}
+          interactionType={interactionType}
+          viewMode={viewMode}
+        />
+      ) : (
+        <BlindBoxList
+          gifts={blindboxList}
+          onGiftClick={handleSelectGift}
+          isGiftSelected={isGiftSelected}
+          viewMode={viewMode}
+        />
+      )}
     </div>
   );
 };

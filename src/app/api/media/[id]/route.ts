@@ -1,5 +1,9 @@
 import { sporeConfig } from '@/utils/config';
-import { getSporeById, unpackToRawSporeData, predefinedSporeConfigs } from '@spore-sdk/core';
+import {
+  getSporeById,
+  unpackToRawSporeData,
+  predefinedSporeConfigs,
+} from '@spore-sdk/core';
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
   const { id } = params;

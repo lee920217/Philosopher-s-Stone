@@ -4,10 +4,10 @@ import BigNumber from 'bignumber.js';
 const useWalletBalance = (walletAddress: string) => {
   const { data: capacity = 0 } = trpc.account.balance.useQuery(
     { address: walletAddress },
-    { enabled: !!walletAddress }
+    { enabled: !!walletAddress },
   );
 
-  const balance = Math.floor(new BigNumber(capacity).toNumber() / 10 ** 8);
+  const balance = new BigNumber(capacity).toNumber() / 10 ** 8;
 
   return balance;
 };

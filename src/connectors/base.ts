@@ -28,13 +28,13 @@ export default abstract class CKBConnector {
 
   public get lock(): Script | undefined {
     const walletData = this.getCurrentWalletAddress();
-    if(!walletData) return undefined
+    if (!walletData) return undefined;
     const { address } = walletData;
     if (!address) {
       return undefined;
     }
     return helpers.parseAddress(address, {
-      config: sporeConfig.lumos
+      config: sporeConfig.lumos,
     });
   }
 
@@ -47,26 +47,19 @@ export default abstract class CKBConnector {
     this.store.dispatch(setWallet(data));
   }
 
-
   protected getData(): WalletInfo | null {
     const walletData = this.getCurrentWalletAddress();
-    return walletData
+    return walletData;
   }
-
 
   protected getLockFromAddress(): Script {
     const walletData = this.getCurrentWalletAddress();
     const { address } = walletData!!;
-    return helpers.parseAddress(address, {
-      config: sporeConfig.lumos,
-    });
+    return helpers.parseAddress(address);
   }
 
   abstract connect(): Promise<void>;
   abstract getAnyoneCanPayLock(): Script;
   abstract isOwned(targetLock: Script): boolean;
   abstract disconnect(): Promise<void> | void;
-  abstract signTransaction(
-    txSkeleton: helpers.TransactionSkeletonType,
-  ): Promise<Transaction>;
 }

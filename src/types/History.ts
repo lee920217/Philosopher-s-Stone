@@ -1,3 +1,3 @@
 export interface HistoryRecord {
-    [key: string]: string;
+  [key: string]: string;
 }
