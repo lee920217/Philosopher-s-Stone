@@ -14,14 +14,22 @@ const GiftReceiveModalContext = createContext<GiftReceiveModalContextProps>({
 
 export const useGiftReceiveModal = () => useContext(GiftReceiveModalContext);
 
-export const GiftReceiveModalProvider: React.FC<{children: ReactNode}> = ({ children }) => {
+export const GiftReceiveModalProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [isGiftReceiveModalOpen, setIsGiftReceiveModalOpen] = useState(false);
 
   const openGiftReceiveModal = () => setIsGiftReceiveModalOpen(true);
   const closeGiftReceiveModal = () => setIsGiftReceiveModalOpen(false);
 
   return (
-    <GiftReceiveModalContext.Provider value={{ isGiftReceiveModalOpen, openGiftReceiveModal, closeGiftReceiveModal }}>
+    <GiftReceiveModalContext.Provider
+      value={{
+        isGiftReceiveModalOpen,
+        openGiftReceiveModal,
+        closeGiftReceiveModal,
+      }}
+    >
       {children}
     </GiftReceiveModalContext.Provider>
   );

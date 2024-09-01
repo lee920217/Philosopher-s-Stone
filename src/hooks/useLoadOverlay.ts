@@ -2,7 +2,9 @@ import { useState } from 'react';
 
 const useLoadingOverlay = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [progressStatus, setProgressStatus] = useState<'pending' | 'done'>('pending');
+  const [progressStatus, setProgressStatus] = useState<'pending' | 'done'>(
+    'pending',
+  );
 
   const showOverlay = () => {
     setIsVisible(true);
@@ -14,7 +16,13 @@ const useLoadingOverlay = () => {
     setProgressStatus('done');
   };
 
-  return { isVisible, showOverlay, hideOverlay, progressStatus, setProgressStatus };
+  return {
+    isVisible,
+    showOverlay,
+    hideOverlay,
+    progressStatus,
+    setProgressStatus,
+  };
 };
 
 export default useLoadingOverlay;

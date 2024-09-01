@@ -1,11 +1,11 @@
 // components/GiftList/GiftList.tsx
 import React from 'react';
 import ListItem from './ListItem';
-import { QuerySpore } from '@/hooks/useQuery/type';
-import { boxData } from '@/types/BlindBox';
+import { QueryDobByAdderssData } from '@/hooks/useQueryDobByAddress';
+import useWindowSize from '@/hooks/useQueryWidth';
 
 interface GiftListProps {
-  gifts: QuerySpore[] | boxData[];
+  gifts: QueryDobByAdderssData;
   onGiftClick: (id: string) => void;
   isGiftSelected: (id: string) => boolean;
   onNewGiftClick?: () => void;
@@ -18,17 +18,32 @@ interface GiftListProps {
    * 2 => support select single item
    * 3 => support select multi item
    */
-  interactionType?: number; 
+  interactionType?: number;
 }
 
-const List: React.FC<GiftListProps> = ({ gifts, onGiftClick, isGiftSelected, onNewGiftClick, viewMode, interactionType = 1, disableList }) => {
+const List: React.FC<GiftListProps> = ({
+  gifts,
+  onGiftClick,
+  isGiftSelected,
+  onNewGiftClick,
+  viewMode,
+  interactionType = 1,
+  disableList,
+}) => {
+  const width = useWindowSize();
   return (
-    <div className='mb-8'>
-      <div className={`${viewMode === 'list' ? 'flex flex-col' : 'grid grid-cols-2 gap-4'} mt-4`}>
+    <div className="mb-8">
+      <div
+        className={`${
+          width < 640
+            ? 'flex flex-col items-center gap-4'
+            : 'flex flex-wrap justify-between gap-4'
+        } mt-4`}
+      >
         {gifts.map(gift => {
-          const isDisabled = disableList?.includes(gift.id)
+          const isDisabled = disableList?.includes(gift.id);
           return (
-            <ListItem 
+            <ListItem
               key={gift.id}
               gift={gift}
               isDisabled={isDisabled}
@@ -37,7 +52,7 @@ const List: React.FC<GiftListProps> = ({ gifts, onGiftClick, isGiftSelected, onN
               viewMode={viewMode}
               interactionType={interactionType}
             />
-          )
+          );
         })}
       </div>
     </div>

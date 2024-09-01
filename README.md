@@ -1,4 +1,3 @@
-
 # Philosopher's Stone
 
 <br/>

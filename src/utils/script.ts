@@ -2,8 +2,7 @@ import { predefinedSporeConfigs } from '@spore-sdk/core';
 import { BI, Script } from '@ckb-lumos/lumos';
 import { sporeConfig } from '@/utils/config';
 
-type ScriptName =
-  keyof (typeof sporeConfig)['lumos']['SCRIPTS'];
+type ScriptName = keyof (typeof sporeConfig)['lumos']['SCRIPTS'];
 
 export function getScriptConfig(name: ScriptName) {
   const script = sporeConfig.lumos.SCRIPTS[name];

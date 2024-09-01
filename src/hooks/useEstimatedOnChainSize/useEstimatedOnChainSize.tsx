@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useConnect } from './useConnect';
-import { createSpore, getSporeScript, predefinedSporeConfigs } from '@spore-sdk/core';
+import {
+  createSpore,
+  getSporeScript,
+  predefinedSporeConfigs,
+} from '@spore-sdk/core';
 import { BI } from '@ckb-lumos/lumos';
 import { isSameScript } from '@/utils/script';
 import { sporeConfig } from '@/utils/config';
@@ -37,10 +41,13 @@ export default function useEstimatedOnChainSize(
 
         const outputs = txSkeleton.get('outputs');
         const cell = outputs
-          .filter((output) => isSameScript(output.cellOutput.lock, lock))
-          .find((output) => {
+          .filter(output => isSameScript(output.cellOutput.lock, lock))
+          .find(output => {
             const { type } = output.cellOutput;
-            const { script: sporeScript } = getSporeScript(sporeConfig, 'Spore');
+            const { script: sporeScript } = getSporeScript(
+              sporeConfig,
+              'Spore',
+            );
             return (
               type?.codeHash === sporeScript.codeHash &&
               type.hashType === sporeScript.hashType
@@ -52,7 +59,7 @@ export default function useEstimatedOnChainSize(
         return Math.ceil(content.size);
       }
     };
-    estimate().then((size) => {
+    estimate().then(size => {
       setOnChainSize(size);
     });
   }, [content, address, lock, clusterId, useCapacityMargin]);

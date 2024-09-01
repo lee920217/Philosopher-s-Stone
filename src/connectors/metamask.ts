@@ -52,11 +52,13 @@ export default class MetaMaskConnector extends CKBConnector {
     const address = helpers.encodeToAddress(lock, {
       config: sporeConfig.lumos,
     });
-    this.store.dispatch(setWallet({
-      address,
-      walletType: 'MetaMask',
-      ethAddress: ethAddress,
-    }));
+    this.store.dispatch(
+      setWallet({
+        address,
+        walletType: 'MetaMask',
+        ethAddress: ethAddress,
+      }),
+    );
   }
 
   public async connect() {
@@ -64,7 +66,7 @@ export default class MetaMaskConnector extends CKBConnector {
     this.setAddress(account);
     this.isConnected = true;
     this.listeners.push(
-      watchAccount((account) => {
+      watchAccount(account => {
         if (account.isConnected) {
           this.setAddress(account.address);
         }
@@ -77,7 +79,7 @@ export default class MetaMaskConnector extends CKBConnector {
 
   public async disconnect(): Promise<void> {
     await disconnect();
-    this.listeners.forEach((unlisten) => unlisten());
+    this.listeners.forEach(unlisten => unlisten());
     this.isConnected = false;
   }
 
@@ -97,8 +99,10 @@ export default class MetaMaskConnector extends CKBConnector {
     const transaction = await omnilock.signTransaction(
       txSkeleton,
       this.lock!,
-      async (message) => {
-        const signature = await signMessage({ message: { raw: message } as any })
+      async message => {
+        const signature = await signMessage({
+          message: { raw: message } as any,
+        });
         return signature;
       },
     );

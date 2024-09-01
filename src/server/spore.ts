@@ -79,7 +79,7 @@ export const sporeRouter = router({
       const { items: spores, collected } = await getSpores();
 
       const items = await Promise.all(
-        spores.map(async (spore) => {
+        spores.map(async spore => {
           if (!spore.clusterId) {
             return spore;
           }

@@ -1,21 +1,24 @@
+import { QueryDobByAdderssItem } from '@/hooks/useQueryDobByAddress';
+
 export interface HashkeyObj {
-    [key: string]:{
-        sporeId: string;
-        senderWalletAddress: string;
-        txHash: string;
-    }
+  [key: string]: {
+    sporeId: string;
+    senderWalletAddress: string;
+    txHash: string;
+  };
 }
 
 export interface HashkeyGift {
-    date: string;
-    senderWalletAddress: string;
-    sporeId: string;
-    txHash: string;
+  date: string;
+  senderWalletAddress: string;
+  sporeId: string;
+  txHash: string;
 }
 
 export interface SporeItem {
-    sporeId: string;
-    senderWalletAddress: string;
-    txHash: string;
-    date?: string;
+  sporeId: string;
+  senderWalletAddress: string;
+  txHash: string;
+  date?: string;
+  dobData?: QueryDobByAdderssItem;
 }

@@ -27,36 +27,38 @@ const FAQComponent: React.FC<FaqProps> = ({ items }) => {
   return (
     <div>
       <div className={'flex items-center mt-8 mb-4'}>
-        <div className='w-full text-primary001 text-center text-hd3mb font-Montserrat w-[66px]'>FAQ</div>
+        <div className="w-full text-primary001 text-center text-hd3mb font-Montserrat w-[66px]">
+          FAQ
+        </div>
         <button onClick={() => router.back()}>
-          <Image 
-            src='/svg/icon-x.svg'
-            width={24}
-            height={24}
-            alt={"Go back"}
-          />
+          <Image src="/svg/icon-x.svg" width={24} height={24} alt={'Go back'} />
         </button>
       </div>
       {items.map((item, index) => (
         <div key={index} className="border-b border-white009">
-          <div className="flex justify-between items-center py-4 cursor-pointer" onClick={() => toggleItem(index)}>
-            <p className="text-white001 font-SourceSanPro text-body1bdmb">{item.question}</p>
-            <button className='text-white001'>
-              {openItemIndex === index ? 
-                <Image 
-                  src='/svg/icon-minus.svg' 
+          <div
+            className="flex justify-between items-center py-4 cursor-pointer"
+            onClick={() => toggleItem(index)}
+          >
+            <p className="text-white001 font-SourceSanPro text-body1bdmb">
+              {item.question}
+            </p>
+            <button className="text-white001">
+              {openItemIndex === index ? (
+                <Image
+                  src="/svg/icon-minus.svg"
                   width={18}
                   height={18}
-                  alt='Collapse answer'
+                  alt="Collapse answer"
                 />
-              : 
-              <Image 
-                  src='/svg/icon-plus.svg' 
+              ) : (
+                <Image
+                  src="/svg/icon-plus.svg"
                   width={18}
                   height={18}
-                  alt='View answer'
+                  alt="View answer"
                 />
-              }
+              )}
             </button>
           </div>
           {openItemIndex === index && (

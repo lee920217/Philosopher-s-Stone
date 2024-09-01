@@ -1,9 +1,10 @@
-import { boxData } from "@/types/BlindBox";
-import { enqueueSnackbar } from "notistack";
+import { boxData } from '@/types/BlindBox';
+import { enqueueSnackbar } from 'notistack';
 import { HistoryRecord } from '../types/History';
-import { GiftProps } from "@/types/Gifts";
-import { SporeItem } from "@/types/Hashkey";
-import { helpers } from "@ckb-lumos/lumos";
+import { GiftProps } from '@/types/Gifts';
+import { SporeItem } from '@/types/Hashkey';
+import { helpers } from '@ckb-lumos/lumos';
+import { QueryDobByAdderssItem } from '@/hooks/useQueryDobByAddress';
 
 // api.ts
 export interface BlindBoxAPIParams {
@@ -13,20 +14,19 @@ export interface BlindBoxAPIParams {
   ids?: string[] | boxData[];
 }
 
-
 export interface GiftParams {
   action: string;
   key: string;
   name?: string;
-  id?: string
+  id?: string;
   ids?: string[] | boxData[];
-  value?: GiftProps
+  value?: GiftProps;
 }
 
 export interface HistoryParams {
   action: string;
   key: string;
-  record?: HistoryRecord
+  record?: HistoryRecord;
 }
 
 export interface HashkeyParams {
@@ -52,7 +52,7 @@ export interface WidthdrawParams {
 }
 
 export const fetchBlindBoxAPI = async (
-  params: BlindBoxAPIParams
+  params: BlindBoxAPIParams,
 ): Promise<any> => {
   try {
     const response = await fetch('/api/blindbox', {
@@ -66,13 +66,13 @@ export const fetchBlindBoxAPI = async (
     const data = await response.json();
     return data;
   } catch (error) {
-    enqueueSnackbar('Error fetching data from the Blind Box API', {variant: 'error'})
+    enqueueSnackbar('Error fetching data from the Blind Box API', {
+      variant: 'error',
+    });
   }
 };
 
-export const fetchGiftAPI = async (
-  params: GiftParams
-): Promise<any> => {
+export const fetchGiftAPI = async (params: GiftParams): Promise<any> => {
   try {
     const response = await fetch('/api/gift', {
       method: 'POST',
@@ -85,13 +85,13 @@ export const fetchGiftAPI = async (
     const data = await response.json();
     return data;
   } catch (error) {
-    enqueueSnackbar('Error fetching data from the gift API', {variant: 'error'})
+    enqueueSnackbar('Error fetching data from the gift API', {
+      variant: 'error',
+    });
   }
 };
 
-export const fetchHashkeyAPI = async (
-  params: HashkeyParams
-): Promise<any> => {
+export const fetchHashkeyAPI = async (params: HashkeyParams): Promise<any> => {
   try {
     const response = await fetch('/api/hash', {
       method: 'POST',
@@ -104,13 +104,13 @@ export const fetchHashkeyAPI = async (
     const data = await response.json();
     return data;
   } catch (error) {
-    enqueueSnackbar('Error fetching data from the history box API', {variant: 'error'})
+    enqueueSnackbar('Error fetching data from the history box API', {
+      variant: 'error',
+    });
   }
 };
 
-export const fetchHistoryAPI = async (
-  params: HistoryParams
-): Promise<any> => {
+export const fetchHistoryAPI = async (params: HistoryParams): Promise<any> => {
   try {
     const response = await fetch('/api/history', {
       method: 'POST',
@@ -123,12 +123,14 @@ export const fetchHistoryAPI = async (
     const data = await response.json();
     return data;
   } catch (error) {
-    enqueueSnackbar('Error fetching data from the blind box API', {variant: 'error'})
+    enqueueSnackbar('Error fetching data from the blind box API', {
+      variant: 'error',
+    });
   }
 };
 
 export const fetchWithdrawAPI = async (
-  params: WidthdrawParams
+  params: WidthdrawParams,
 ): Promise<any> => {
   try {
     const response = await fetch('/api/withdraw', {
@@ -141,13 +143,11 @@ export const fetchWithdrawAPI = async (
     const data = await response.json();
     return data;
   } catch (error) {
-    enqueueSnackbar('Error Fetch WithdrawAPI', {variant: 'error'})
+    enqueueSnackbar('Error Fetch WithdrawAPI', { variant: 'error' });
   }
-}
+};
 
-export const fetchWalletAPI = async (
-  params: WalletParams
-): Promise<any> => {
+export const fetchWalletAPI = async (params: WalletParams): Promise<any> => {
   try {
     const response = await fetch('/api/wallet', {
       method: 'POST',
@@ -159,6 +159,6 @@ export const fetchWalletAPI = async (
     const data = await response.json();
     return data;
   } catch (error) {
-    enqueueSnackbar('Error get Wallet', {variant: 'error'})
+    enqueueSnackbar('Error get Wallet', { variant: 'error' });
   }
 };

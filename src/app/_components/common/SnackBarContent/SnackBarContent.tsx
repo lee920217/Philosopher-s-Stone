@@ -6,7 +6,11 @@ interface CustomSnackbarProps extends SnackbarContentProps {
   message: React.ReactNode;
 }
 
-const CustomSnackbar: React.FC<CustomSnackbarProps> = ({ message, variant, ...otherProps }) => {
+const CustomSnackbar: React.FC<CustomSnackbarProps> = ({
+  message,
+  variant,
+  ...otherProps
+}) => {
   const bgClass = {
     success: 'success-function',
     error: 'error-function',

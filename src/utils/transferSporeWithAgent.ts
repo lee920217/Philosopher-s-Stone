@@ -1,6 +1,5 @@
 import { predefinedSporeConfigs } from '@spore-sdk/core';
 import { createSecp256k1Wallet } from './agentWallet';
-import { getLumosScript } from './updateLumosConfig';
 
 /**
  * SporeConfig provides spore/cluster's detailed info like ScriptIds and CellDeps.
@@ -13,7 +12,6 @@ import { getLumosScript } from './updateLumosConfig';
 //     latest['lumos'] = latestLumosScript
 //     return latest
 // });
-
 
 // export const getAccounts = async() => {
 //   const configuration = await config();
