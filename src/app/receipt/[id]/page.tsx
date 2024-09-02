@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { predefinedSporeConfigs, meltSpore as _meltSpore } from '@spore-sdk/core';
+import { meltSpore as _meltSpore } from '@spore-sdk/core';
 import Link from 'next/link';
 import { enqueueSnackbar } from 'notistack';
 import { useSporeQuery } from '@/hooks/useQuery/useQuerybySpore';
@@ -14,58 +14,80 @@ import { sendTransaction } from '@/utils/transaction';
 import { useMutation } from '@tanstack/react-query';
 import useLoadingOverlay from '@/hooks/useLoadOverlay';
 import LoadingOverlay from '@/app/_components/LoadingOverlay/LoadingOverlay';
-import { getLumosScript } from '@/utils/updateLumosConfig';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { fetchGiftAPI } from '@/utils/fetchAPI';
-import { formatDate, formatTypeDate } from '@/utils/common';
+import { formatTypeDate } from '@/utils/common';
 import { sporeConfig } from '@/utils/config';
 import Button from '@/app/_components/Button/Button';
 import { createTransactionFromSkeleton } from '@ckb-lumos/lumos/helpers';
 import { signRawTransaction } from '@joyid/ckb';
-
+import useQueryDobById from '@/hooks/useQueryDobById';
+import { getPrevBgTrait } from '@/utils/getMedia';
+import DobImage from '@/app/_components/common/DobImage/DobImage';
+import { getImageUrlById } from '@/utils/backgroundImageSettings';
 
 const Receipt: React.FC = () => {
   const rpc = new RPC(sporeConfig.ckbNodeUrl);
   const router = useRouter();
   const pathName = usePathname();
-  const pathAddress = pathName.split("/")[pathName.split('/').length - 1]
-  const searchParams = useSearchParams()
-  const [transactionStatus, setTransactionStatus] = useState<string>('commited'); 
-  const [occupied, setOccupied] = useState<string>('')
+  const pathAddress = pathName.split('/')[pathName.split('/').length - 1];
+  const searchParams = useSearchParams();
+  const [transactionStatus, setTransactionStatus] =
+    useState<string>('commited');
+  const [occupied, setOccupied] = useState<string>('');
   const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [isMeltModal, setIsMeltModal] = useState<boolean>(false)
-  const [giftMessage, setGiftMessage] = useState<string>("") 
-  const { address } = useConnect()
-  const walletAddress = useSelector((state: RootState) => state.wallet.wallet?.address);
+  const [isMeltModal, setIsMeltModal] = useState<boolean>(false);
+  const [giftMessage, setGiftMessage] = useState<string>('');
+  const { address } = useConnect();
+  const walletAddress = useSelector(
+    (state: RootState) => state.wallet.wallet?.address,
+  );
   const [sporeId, setSporeId] = useState<string>('');
   const [historyType, setHistoryType] = useState<string>('melt');
   const [historyDate, setHistoryDate] = useState<string>('');
-  const { isVisible, showOverlay, hideOverlay, progressStatus, setProgressStatus } = useLoadingOverlay(); 
-  const texts = ["Unmatched Flexibility and Interopera­bility", "Supreme Security and Decentrali­zation", "Inventive Tokenomics"]; 
+  const {
+    isVisible,
+    showOverlay,
+    hideOverlay,
+    progressStatus,
+    setProgressStatus,
+  } = useLoadingOverlay();
+  const [imgData, setImgData] = useState<string>();
+
+  const texts = [
+    'Unmatched Flexibility and Interopera­bility',
+    'Supreme Security and Decentrali­zation',
+    'Inventive Tokenomics',
+  ];
+
   const { data: spore, isLoading: isSporeLoading } = useSporeQuery(
     sporeId as string,
-  ); 
+  );
+
+  const { data: dobData, loading: isDobLoading } = useQueryDobById(
+    sporeId as string,
+  );
 
   const formatNumberWithCommas = (num: number) => {
     const numStr = num.toString();
     const reversedNumStr = numStr.split('').reverse().join('');
     const commaInserted = reversedNumStr.replace(/(\d{3})(?=\d)/g, '$1,');
-    setOccupied(commaInserted.split('').reverse().join(''))
-  }
+    setOccupied(commaInserted.split('').reverse().join(''));
+  };
 
   const handleCopy = async (textToCopy: string) => {
     try {
       await navigator.clipboard.writeText(textToCopy);
-      enqueueSnackbar('Copied Successful', {variant: 'success'})
+      enqueueSnackbar('Copied Successful', { variant: 'success' });
     } catch (err) {
-      enqueueSnackbar('Copied Fail', {variant: 'error'})
+      enqueueSnackbar('Copied Fail', { variant: 'error' });
     }
   };
 
   const handleMeltModal = () => {
-    setIsMeltModal(!isMeltModal)
-  }
+    setIsMeltModal(!isMeltModal);
+  };
 
   const meltSpore = useCallback(
     async (...args: Parameters<typeof _meltSpore>) => {
@@ -82,7 +104,7 @@ const Receipt: React.FC = () => {
   const meltSporeMutation = useMutation({
     mutationFn: meltSpore,
     onSuccess: () => {
-      enqueueSnackbar('Melt Successful', {variant: 'success'})
+      enqueueSnackbar('Melt Successful', { variant: 'success' });
     },
   });
 
@@ -102,23 +124,27 @@ const Receipt: React.FC = () => {
     if (!address || !spore) {
       return;
     }
-    handleMeltModal()
-    showOverlay(); 
+    handleMeltModal();
+    showOverlay();
     await meltSporeMutation.mutateAsync({
       outPoint: spore!.cell!.outPoint!,
       config: sporeConfig,
     });
-    await callUpdateGiftReadStatusAction(walletAddress!!, pathAddress)
-    setProgressStatus('done')
+    await callUpdateGiftReadStatusAction(walletAddress!!, pathAddress);
+    setProgressStatus('done');
     setTimeout(() => {
       hideOverlay();
-    }, 1000)
-    enqueueSnackbar('Melt Successful', {variant: 'success'})
-    router.push('/')
-  }
+    }, 1000);
+    enqueueSnackbar('Melt Successful', { variant: 'success' });
+    router.push('/');
+  };
 
   async function callUpdateGiftReadStatusAction(key: string, value: string) {
-    const response = await fetchGiftAPI({ action: 'remove', key, ids: [value] })
+    const response = await fetchGiftAPI({
+      action: 'remove',
+      key,
+      ids: [value],
+    });
     const data = await response.data;
     return data;
   }
@@ -126,121 +152,188 @@ const Receipt: React.FC = () => {
   const getTransaction = async () => {
     const transaction = await rpc.getTransaction(pathAddress);
     setTransactionStatus(transaction.txStatus.status);
-    setSporeId(transaction.transaction.outputs[0].type?.args!!)
-  }
+    setSporeId(transaction.transaction.outputs[0].type?.args!!);
+  };
 
   useEffect(() => {
-    getTransaction()  
-  }, [])
+    getTransaction();
+  }, []);
 
   useEffect(() => {
     let type = searchParams.get('type');
     let date = searchParams.get('date');
     setHistoryType(type || 'melt');
-    date ? setHistoryDate(formatTypeDate(date)): '';
-  }, [searchParams])
-
-
+    date ? setHistoryDate(formatTypeDate(date)) : '';
+  }, [searchParams]);
 
   useEffect(() => {
-    if(!isSporeLoading && sporeId && spore?.cell?.cellOutput.capacity) {
-      formatNumberWithCommas(BI.from(spore?.cell?.cellOutput.capacity).toNumber() / 10 ** 8)
+    if (dobData) {
+      setImgData(getPrevBgTrait(dobData[0].dobDecodeOutput?.render_output!!));
     }
-  }, [isSporeLoading, spore?.cell?.cellOutput.capacity, sporeId])
+  }, [dobData]);
+
+  useEffect(() => {
+    if (!isSporeLoading && sporeId && spore?.cell?.cellOutput.capacity) {
+      formatNumberWithCommas(
+        BI.from(spore?.cell?.cellOutput.capacity).toNumber() / 10 ** 8,
+      );
+    }
+  }, [isSporeLoading, spore?.cell?.cellOutput.capacity, sporeId]);
 
   return (
     <div className="flex flex-col items-center p-4 pb-12">
-      <LoadingOverlay isVisible={isVisible} texts={texts} progressStatus={progressStatus}/>
-      <MeltGiftModal onClose={handleMeltModal} amount={occupied} onMelt={handleMelt} isOpen={isMeltModal}/>
-      <div className='w-full flex justify-between my-8'>
-        <div className='flex items-center'>
+      <LoadingOverlay
+        isVisible={isVisible}
+        texts={texts}
+        progressStatus={progressStatus}
+      />
+      <MeltGiftModal
+        onClose={handleMeltModal}
+        amount={occupied}
+        onMelt={handleMelt}
+        isOpen={isMeltModal}
+      />
+      <div className="w-full flex justify-between my-8">
+        <div className="flex items-center">
           <button onClick={() => router.back()} className="self-start">
             <Image
-              src='/svg/icon-arrow-left.svg'
+              src="/svg/icon-arrow-left.svg"
               width={24}
               height={24}
-              alt='Go back'
+              alt="Go back"
             />
           </button>
-          <div className='text-white001 font-SourceSanPro text-subheadermb ml-3'>
-            {pathAddress.slice(0,6)}...{pathAddress.slice(pathAddress.length - 6, pathAddress.length)}
+          <div className="text-white001 font-SourceSanPro text-subheadermb ml-3">
+            {pathAddress.slice(0, 6)}...
+            {pathAddress.slice(pathAddress.length - 6, pathAddress.length)}
           </div>
         </div>
-        <div className='flex gap-2'>
-          <button onClick={() => {handleCopy(pathAddress)}} className="mr-4">
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              handleCopy(pathAddress);
+            }}
+            className="mr-4"
+          >
             <Image
-              src='/svg/icon-copy.svg'
+              src="/svg/icon-copy.svg"
               width={24}
               height={24}
-              alt='Copy address'
+              alt="Copy address"
             />
           </button>
-          <Link href={`https://explorer.nervos.org/transaction/${spore?.cell?.outPoint?.txHash}`} target='_blank'>
+          <Link
+            href={`https://explorer.nervos.org/transaction/${spore?.cell?.outPoint?.txHash}`}
+            target="_blank"
+          >
             <Image
-              src='/svg/icon-globe.svg'
+              src="/svg/icon-globe.svg"
               width={24}
               height={24}
-              alt='Check on CKB Explorer'
+              alt="Check on CKB Explorer"
             />
           </Link>
         </div>
       </div>
-      {
-        transactionStatus === 'pending' && 
-        <div className='w-full relative flex items-center justify-between bg-warning-bg rounded-md text-warning-function px-4 border border-warning-function font-SourceSanPro text-labelmb py-2'>
+      {transactionStatus === 'pending' && (
+        <div className="w-full relative flex items-center justify-between bg-warning-bg rounded-md text-warning-function px-4 border border-warning-function font-SourceSanPro text-labelmb py-2">
           <p>Pending: This Gift is currently being processed.</p>
-          <Image 
-            className='cursor' 
-            onMouseEnter={handleMouseEnter} 
-            onMouseLeave={handleMouseLeave} 
+          <Image
+            className="cursor"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             onClick={handleClick}
-            src={'/svg/question-warning.svg'} 
-            width={18} height={18} 
-            alt={'explanation-pending'} 
+            src={'/svg/question-warning.svg'}
+            width={18}
+            height={18}
+            alt={'explanation-pending'}
           />
           {showPopup && (
             <div className="absolute top-full right-0 mt-2 w-80 p-4 bg-primary008 text-white001 shadow-lg rounded-md z-10">
-              <p className='font-SourceSanPro text-labelbdmb'>Hang Tight! Here’s Why It&apos;s Taking Awhile:</p>
-              <p className='font-SourceSanPro text-labelbd'>Sometimes, the blockchain gets really busy, kind of like traffic during rush hour. This can make things a bit slower. We&apos;re keeping an eye on it to get your transaction through as soon as possible. Thanks for sticking with us!</p>
+              <p className="font-SourceSanPro text-labelbdmb">
+                Hang Tight! Here’s Why It&apos;s Taking Awhile:
+              </p>
+              <p className="font-SourceSanPro text-labelbd">
+                Sometimes, the blockchain gets really busy, kind of like traffic
+                during rush hour. This can make things a bit slower. We&apos;re
+                keeping an eye on it to get your transaction through as soon as
+                possible. Thanks for sticking with us!
+              </p>
             </div>
           )}
         </div>
-      }
-      {
-        transactionStatus === 'committed' && 
-        <div className='w-full relative flex items-center justify-between bg-success-bg rounded-md text-success-function px-4 border border-success-function font-SourceSanPro text-labelmb py-2'>
-          <p>{`Success: This Gift was ${historyType === 'melt' ? 'melt' : historyType === 'create' ? 'created' : historyType === 'receive' ? 'received': 'sent' } successfully.`}</p>
+      )}
+      {transactionStatus === 'committed' && (
+        <div className="w-full relative flex items-center justify-between bg-success-bg rounded-md text-success-function px-4 border border-success-function font-SourceSanPro text-labelmb py-2">
+          <p>{`Success: This Gift was ${
+            historyType === 'melt'
+              ? 'melt'
+              : historyType === 'create'
+              ? 'created'
+              : historyType === 'receive'
+              ? 'received'
+              : 'sent'
+          } successfully.`}</p>
         </div>
-      }
+      )}
       <div className="py-4 relative">
-        {historyType === 'melt' ? 
-        (<>
-          <Image
-            src={'/svg/melt-404.svg'}
-            width={170}
-            height={170}
-            alt={'melt so 404'}
-          />
-        </>)
-          :
-        (<>{sporeId && transactionStatus !== 'pending' ? 
-          <img src={`/api/media/${sporeId}`} className="px-4 w-[300px] h-[200px]" alt="Gift" /> 
-            :
-          <Image alt={'unkown-sporeId'} src={`/svg/blindbox-animation-1.svg`} className="rounded" width={164} height={120}/>
-        }</>)}
+        {historyType === 'melt' ? (
+          <>
+            <Image
+              src={'/svg/melt-404.svg'}
+              width={170}
+              height={170}
+              alt={'melt so 404'}
+            />
+          </>
+        ) : (
+          <>
+            {sporeId && transactionStatus !== 'pending' ? (
+              dobData &&
+              imgData && (
+                <DobImage
+                  bgUrl={getImageUrlById(dobData[0].clusterId) || ''}
+                  imgUrl={`https://dobfs.dobby.market/${imgData}`}
+                ></DobImage>
+              )
+            ) : (
+              <Image
+                alt={'unkown-sporeId'}
+                src={`/svg/blindbox-animation-1.svg`}
+                className="rounded"
+                width={164}
+                height={120}
+              />
+            )}
+          </>
+        )}
       </div>
-      <div className='text-white001 font-Montserrat text-hd2mb'>
-        {occupied} CKB 
+      <div className="text-white001 font-Montserrat text-hd2mb">
+        {occupied} CKB
       </div>
-      <div className='font-SourceSanPro text-body1mb py-4 text-white005'>{ historyDate }</div>
-      {giftMessage && <p className="pb-4 font-SourceSanPro text-white001 text-body1m">“{giftMessage}”</p>}
-      {
-        transactionStatus === 'committed' && historyType === 'created' && 
+      <div className="font-SourceSanPro text-body1mb py-4 text-white005">
+        {historyDate}
+      </div>
+      {giftMessage && (
+        <p className="pb-4 font-SourceSanPro text-white001 text-body1m">
+          “{giftMessage}”
+        </p>
+      )}
+      {transactionStatus === 'committed' && historyType === 'created' && (
         <>
-          <Button type='solid' label='Send as Gift' href={`/send?hasGift=${sporeId}`} />
-          <Button className='my-6' type='outline' label='Melt into CKB' onClick={handleMeltModal} />
+          <Button
+            type="solid"
+            label="Send as Gift"
+            href={`/send?hasGift=${sporeId}`}
+          />
+          <Button
+            className="my-6"
+            type="outline"
+            label="Melt into CKB"
+            onClick={handleMeltModal}
+          />
         </>
-      }
+      )}
     </div>
   );
 };

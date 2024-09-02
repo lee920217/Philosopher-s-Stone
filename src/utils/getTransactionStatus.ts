@@ -5,14 +5,14 @@ const getTransaction = async (txHash: string) => {
     const response = await fetch(RPC_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         jsonrpc: '2.0',
         id: 1,
         method: 'get_transaction',
-        params: [txHash]
-      })
+        params: [txHash],
+      }),
     });
 
     if (!response.ok) {

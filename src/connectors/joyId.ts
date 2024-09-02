@@ -16,7 +16,10 @@ export default class JoyIdConnector extends CKBConnector {
 
     initConfig({
       name: 'Philosopherstone',
-      joyidAppURL: process.env.NODE_ENV === 'development' ? 'https://testnet.joyid.dev' : "https://app.joy.id/",
+      joyidAppURL:
+        process.env.NODE_ENV === 'development'
+          ? 'https://testnet.joyid.dev'
+          : 'https://app.joy.id/',
       // joyidAppURL: process.env.NODE_ENV === 'development' ? 'https://app.joy.id/' : "https://app.joy.id/",
     });
   }
@@ -50,7 +53,10 @@ export default class JoyIdConnector extends CKBConnector {
 
   public async connect(): Promise<void> {
     const walletData = this.getData();
-    if (walletData?.walletType === this.type.toLowerCase() && walletData?.address) {
+    if (
+      walletData?.walletType === this.type.toLowerCase() &&
+      walletData?.address
+    ) {
       return;
     }
     const joyidWalletInfo = await connect();

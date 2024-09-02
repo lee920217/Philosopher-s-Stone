@@ -57,7 +57,7 @@ export default class SporeService {
   public get script() {
     return getSporeScript(this.config, 'Spore').script;
   }
-  
+
   public isSporeScript(script: Script | undefined) {
     if (!script) {
       return false;
@@ -103,16 +103,17 @@ export default class SporeService {
   public async getNewOmnilock() {
     const collector = this.indexer.collector({
       type: {
-        "codeHash": "0x00000000000000000000000000000000000000000000000000545950455f4944",
-        "args": "0x761f51fc9cd6a504c32c6ae64b3746594d1af27629b427c5ccf6c9a725a89144",
-        "hashType": "type"
-      }
-    })
-    let cells:Cell[] = []
-    for await(const cell of collector.collect()) {
-      cells.push(cell)
+        codeHash:
+          '0x00000000000000000000000000000000000000000000000000545950455f4944',
+        args: '0x761f51fc9cd6a504c32c6ae64b3746594d1af27629b427c5ccf6c9a725a89144',
+        hashType: 'type',
+      },
+    });
+    let cells: Cell[] = [];
+    for await (const cell of collector.collect()) {
+      cells.push(cell);
     }
-    return cells
+    return cells;
   }
 
   public async list(clusterIds: string[] = [], options?: QueryOptions) {
@@ -215,7 +216,7 @@ export default class SporeService {
       cursor = transactions.lastCursor;
 
       const txs = await Promise.all(
-        transactions.objects.map(async (tx) => {
+        transactions.objects.map(async tx => {
           const { transaction } = await this.rpc.getTransaction(tx.txHash);
           return transaction;
         }),
@@ -223,13 +224,13 @@ export default class SporeService {
 
       const spores = await Promise.all(
         txs
-          .filter((tx) =>
-            tx.outputs.some((output) =>
+          .filter(tx =>
+            tx.outputs.some(output =>
               SporeService.shared.isSporeScript(output.type),
             ),
           )
-          .map(async (tx) => {
-            const index = tx.outputs.findIndex((output) =>
+          .map(async tx => {
+            const index = tx.outputs.findIndex(output =>
               SporeService.shared.isSporeScript(output.type),
             )!;
             const outPoint: OutPoint = {
@@ -252,8 +253,7 @@ export default class SporeService {
       );
       recentSpores.push(
         ...(spores.filter(
-          (spore) =>
-            spore !== undefined && (!withClusterId || !!spore.clusterId),
+          spore => spore !== undefined && (!withClusterId || !!spore.clusterId),
         ) as Spore[]),
       );
       recentSpores = uniqBy(recentSpores, 'id');

@@ -9,8 +9,13 @@ export function getResponseCacheDisabledHeaders() {
   return headers;
 }
 
-export function isResponseCacheEnabled(requestContext: GraphQLRequestContext<Record<string, any>>) {
-  return requestContext.request.http?.headers.get(RESPONSE_CACHE_HEADER_NAME) !== 'false';
+export function isResponseCacheEnabled(
+  requestContext: GraphQLRequestContext<Record<string, any>>,
+) {
+  return (
+    requestContext.request.http?.headers.get(RESPONSE_CACHE_HEADER_NAME) !==
+    'false'
+  );
 }
 
 export const graphQLClient = new GraphQLClient('/api/graphql', {

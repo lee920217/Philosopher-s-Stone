@@ -27,8 +27,8 @@ export const useConnect = () => {
   const { connectors, autoConnect } = useContext(ConnectContext);
   const walletInfo = useSelector((state: RootState) => state.wallet.wallet);
 
-  const address = walletInfo?.address
-  const connectorType = walletInfo?.walletType
+  const address = walletInfo?.address;
+  const connectorType = walletInfo?.walletType;
   const [autoConnected, setAuthConnected] = useState(false);
   const connected = !!address;
 
@@ -40,7 +40,7 @@ export const useConnect = () => {
   const connector = useMemo(
     () =>
       connectors.find(
-        (connector) =>
+        connector =>
           connector.type.toLowerCase() === connectorType?.toLowerCase(),
       ),
     [connectors, connectorType],
@@ -63,8 +63,6 @@ export const useConnect = () => {
     const lock = connector.getAnyoneCanPayLock();
     return lock;
   }, [connector, connectorType]);
-
-
 
   return {
     address,

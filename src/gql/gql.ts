@@ -13,8 +13,10 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query GetSporeQuery($id: String!) {\n    spore(id: $id) {\n      id\n      contentType\n      capacityMargin\n      clusterId\n      cluster {\n        id\n        name\n        description\n      }\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n": types.GetSporeQueryDocument,
-    "\n  query GetSporesByAddress($address: String!) {\n    spores(filter: { addresses: [$address] }) {\n      id\n      contentType\n      capacityMargin\n\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n": types.GetSporesByAddressDocument,
+  '\n  query GetSporeQuery($id: String!) {\n    spore(id: $id) {\n      id\n      contentType\n      capacityMargin\n      clusterId\n      cluster {\n        id\n        name\n        description\n      }\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n':
+    types.GetSporeQueryDocument,
+  '\n  query GetSporesByAddress($address: String!) {\n    spores(filter: { addresses: [$address] }) {\n      id\n      contentType\n      capacityMargin\n\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n':
+    types.GetSporesByAddressDocument,
 };
 
 /**
@@ -34,14 +36,19 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetSporeQuery($id: String!) {\n    spore(id: $id) {\n      id\n      contentType\n      capacityMargin\n      clusterId\n      cluster {\n        id\n        name\n        description\n      }\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetSporeQuery($id: String!) {\n    spore(id: $id) {\n      id\n      contentType\n      capacityMargin\n      clusterId\n      cluster {\n        id\n        name\n        description\n      }\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n"];
+export function graphql(
+  source: '\n  query GetSporeQuery($id: String!) {\n    spore(id: $id) {\n      id\n      contentType\n      capacityMargin\n      clusterId\n      cluster {\n        id\n        name\n        description\n      }\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n',
+): (typeof documents)['\n  query GetSporeQuery($id: String!) {\n    spore(id: $id) {\n      id\n      contentType\n      capacityMargin\n      clusterId\n      cluster {\n        id\n        name\n        description\n      }\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n'];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetSporesByAddress($address: String!) {\n    spores(filter: { addresses: [$address] }) {\n      id\n      contentType\n      capacityMargin\n\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetSporesByAddress($address: String!) {\n    spores(filter: { addresses: [$address] }) {\n      id\n      contentType\n      capacityMargin\n\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n"];
+export function graphql(
+  source: '\n  query GetSporesByAddress($address: String!) {\n    spores(filter: { addresses: [$address] }) {\n      id\n      contentType\n      capacityMargin\n\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n',
+): (typeof documents)['\n  query GetSporesByAddress($address: String!) {\n    spores(filter: { addresses: [$address] }) {\n      id\n      contentType\n      capacityMargin\n\n      cell {\n        cellOutput {\n          capacity\n          lock {\n            args\n            codeHash\n            hashType\n          }\n        }\n        outPoint {\n          txHash\n          index\n        }\n      }\n    }\n  }\n'];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
 }
 
-export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;
+export type DocumentType<TDocumentNode extends DocumentNode<any, any>> =
+  TDocumentNode extends DocumentNode<infer TType, any> ? TType : never;

@@ -11,19 +11,28 @@ interface BlindBoxListProps {
   list: boxData[];
   interactionType?: number;
   selectedList: string[];
-  disableList?: string[]; 
+  disableList?: string[];
 }
 
-const BlindBoxList: React.FC<BlindBoxListProps> = ({ onNewGiftClick, list, interactionType = 1,updateGiftList, selectedList, disableList }) => {
+const BlindBoxList: React.FC<BlindBoxListProps> = ({
+  onNewGiftClick,
+  list,
+  interactionType = 1,
+  updateGiftList,
+  selectedList,
+  disableList,
+}) => {
   const [gifts, setGifts] = useState<boxData[]>(list);
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
-  const [selectedGifts, setSelectedGifts] = useState<string[]>(selectedList ? selectedList: []);
+  const [selectedGifts, setSelectedGifts] = useState<string[]>(
+    selectedList ? selectedList : [],
+  );
   const { width } = useWindowDimensions();
 
   const handleSelectGift = (id: string) => {
-    setSelectedGifts(prev => 
-      prev.includes(id) ? prev.filter(giftId => giftId !== id) : [...prev, id]
+    setSelectedGifts(prev =>
+      prev.includes(id) ? prev.filter(giftId => giftId !== id) : [...prev, id],
     );
   };
 
@@ -35,47 +44,50 @@ const BlindBoxList: React.FC<BlindBoxListProps> = ({ onNewGiftClick, list, inter
     if (updateGiftList) {
       updateGiftList(selectedGifts);
     }
-  }, [selectedGifts]); 
-
+  }, [selectedGifts]);
 
   useEffect(() => {
-    setGifts(list)
-  }, [list])
+    setGifts(list);
+  }, [list]);
 
   const isGiftSelected = (id: string) => selectedGifts.includes(id);
 
   return (
-    <div className='mb-8'>
+    <div className="mb-8">
       <div className="flex justify-between items-center mt-4">
         <div>
-          <span className='text-white001 text-labelmb font-SourceSanPro'>{list.length} {list.length === 1 ? "Gift" : "Gifts"}</span>
+          <span className="text-white001 text-labelmb font-SourceSanPro">
+            {list.length} {list.length === 1 ? 'Gift' : 'Gifts'}
+          </span>
           {/* <button className="cursor-pointer ml-4 text-primary004">Select All</button> */}
         </div>
         <div onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}>
-          {viewMode === "grid" ? 
-            <Image 
+          {viewMode === 'grid' ? (
+            <Image
               className="cursor-pointer"
-              alt='list view icon'
-              src='/svg/icon-list.svg'
+              alt="list view icon"
+              src="/svg/icon-list.svg"
               width={24}
               height={24}
-            /> : 
-             <Image
+            />
+          ) : (
+            <Image
               className="cursor-pointer"
-              alt='grid view icon'
-              src='/svg/icon-grid.svg'
+              alt="grid view icon"
+              src="/svg/icon-grid.svg"
               width={24}
               height={24}
-          />}
+            />
+          )}
         </div>
       </div>
-      <List
+      {/* <List
         gifts={gifts}
         onGiftClick={handleSelectGift}
         isGiftSelected={isGiftSelected}
         interactionType={interactionType}
         viewMode={viewMode}
-      />
+      /> */}
     </div>
   );
 };
