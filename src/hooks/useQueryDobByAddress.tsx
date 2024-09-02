@@ -52,8 +52,8 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const useQueryDobByAddress = () => {
   const address = useAddress();
-  const network =
-    process.env.NODE_ENV === 'development' ? 'testnet' : 'mainnet';
+  const network = 'testnet'
+    // process.env.NODE_ENV === 'development' ? 'testnet' : 'mainnet';
   const { data, error } = useSWR<QueryDobByAdderssData>(
     `https://ckb-lambda-server.shuttleapp.rs/address/${address}/spore/all?network=${network}&decode_dobs=true`,
     fetcher,
